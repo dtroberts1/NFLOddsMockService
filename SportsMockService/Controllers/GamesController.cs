@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Cors;
 
 namespace SportsMockService.Controllers
 {
@@ -23,6 +24,7 @@ namespace SportsMockService.Controllers
             _configuration = configuration;
         }
 
+        [EnableCors]
         [HttpGet]
         [Route("allGames")]
         public async Task<IActionResult> GetGames()

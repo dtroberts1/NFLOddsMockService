@@ -43,6 +43,18 @@ namespace SportsMockService
             services.AddScoped<IVenueRepository, VenueRepository>();
             services.AddScoped<IStatusRepository, StatusRepository>();
 
+            // Default Policy
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("https://localhost:5000", "http://localhost:3000")
+                                            .AllowAnyHeader()
+                                            .AllowAnyMethod();
+                    });
+            });
+
             services.AddControllers();
         }
 
@@ -57,6 +69,8 @@ namespace SportsMockService
             }
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 
