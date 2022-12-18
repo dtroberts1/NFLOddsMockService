@@ -72,8 +72,11 @@ namespace SportsMockService.Repository
             }
         }
 
-        public async Task<int> UpdateGameOdd(GameOdd gameOdd, string changeCategory)
+        public async Task<int> UpdateGameOdd(GameOdd gameOdd, string changeCategory, string innerCategory)
         {
+            /*
+                 innerCategory: HomeMoneyLine, AwayMoneyLine, DrawMoneyLine, HomeSpread, AwaySpread, OverPayout, UnderPayout
+            */
             try
             {
                 if (String.IsNullOrEmpty(changeCategory))
@@ -116,52 +119,97 @@ namespace SportsMockService.Repository
                     switch (changeCategory)
                     {
                         case "moneyLine":
-                            string[] keys = new string[] { "@HomeMoneyLine", "@AwayMoneyLine", "@DrawMoneyLine" };
-                            dictionary.Add(keys[i], gameOdd.HomeMoneyLine);
-                            parameters.Add(keys[i], dictionary[keys[i]], DbType.Int32, ParameterDirection.Input);
-                            i++;
+                            string[] keys = String.IsNullOrEmpty(innerCategory) ? (new string[] { "@HomeMoneyLine", "@AwayMoneyLine", "@DrawMoneyLine" }) : 
+                                (new string[] { String.Concat("@", innerCategory) });
 
-                            dictionary.Add(keys[i], gameOdd.AwayMoneyLine);
-                            parameters.Add(keys[i], dictionary[keys[i]], DbType.Int32, ParameterDirection.Input);
-                            i++;
+                            if (String.IsNullOrEmpty(innerCategory) || innerCategory.Equals("HomeMoneyLine"))
+                            {
+                                dictionary.Add(keys[i], gameOdd.HomeMoneyLine);
+                                parameters.Add(keys[i], dictionary[keys[i]], DbType.Int32, ParameterDirection.Input);
+                                i++;
+                            }
 
-                            dictionary.Add(keys[i], gameOdd.DrawMoneyLine);
-                            parameters.Add(keys[i], dictionary[keys[i]], DbType.Int32, ParameterDirection.Input);
-                            i++;
+                            if (String.IsNullOrEmpty(innerCategory) || innerCategory.Equals("AwayMoneyLine"))
+                            {
+                                dictionary.Add(keys[i], gameOdd.AwayMoneyLine);
+                                parameters.Add(keys[i], dictionary[keys[i]], DbType.Int32, ParameterDirection.Input);
+                                i++;
+                            }
+
+                            if (String.IsNullOrEmpty(innerCategory) || innerCategory.Equals("DrawMoneyLine"))
+                            {
+                                dictionary.Add(keys[i], gameOdd.DrawMoneyLine);
+                                parameters.Add(keys[i], dictionary[keys[i]], DbType.Int32, ParameterDirection.Input);
+                                i++;
+                            }
 
                             break;
                         case "spread":
-                            keys = new string[] { "@HomePointSpread", "@AwayPointSpread", "@HomePointSpreadPayout", "@AwayPointSpreadPayout" };
-                            dictionary.Add(keys[i], gameOdd.HomePointSpread);
-                            parameters.Add(keys[i], dictionary[keys[i]], DbType.Decimal, ParameterDirection.Input);
-                            i++;
+                            keys = String.IsNullOrEmpty(innerCategory) ? (new string[] { "@HomePointSpread", "@AwayPointSpread", "@HomePointSpreadPayout", "@AwayPointSpreadPayout" }) :
+                                (innerCategory.Equals("HomeSpread") ? (new string[] { "@HomePointSpread", "@HomePointSpreadPayout" }) : (new string[] { "@AwayPointSpread", "@AwayPointSpreadPayout" }));
 
-                            dictionary.Add(keys[i], gameOdd.AwayPointSpread);
-                            parameters.Add(keys[i], dictionary[keys[i]], DbType.Decimal, ParameterDirection.Input);
-                            i++;
+                            if (String.IsNullOrEmpty(innerCategory))
+                            {
+                                dictionary.Add(keys[i], gameOdd.HomePointSpread);
+                                parameters.Add(keys[i], dictionary[keys[i]], DbType.Decimal, ParameterDirection.Input);
+                                i++;
 
-                            dictionary.Add(keys[i], gameOdd.HomePointSpreadPayout);
-                            parameters.Add(keys[i], dictionary[keys[i]], DbType.Decimal, ParameterDirection.Input);
-                            i++;
+                                dictionary.Add(keys[i], gameOdd.HomePointSpreadPayout);
+                                parameters.Add(keys[i], dictionary[keys[i]], DbType.Decimal, ParameterDirection.Input);
+                                i++;
 
-                            dictionary.Add(keys[i], gameOdd.AwayPointSpreadPayout);
-                            parameters.Add(keys[i], dictionary[keys[i]], DbType.Decimal, ParameterDirection.Input);
-                            i++;
+                                dictionary.Add(keys[i], gameOdd.AwayPointSpread);
+                                parameters.Add(keys[i], dictionary[keys[i]], DbType.Decimal, ParameterDirection.Input);
+                                i++;
+
+                                dictionary.Add(keys[i], gameOdd.AwayPointSpreadPayout);
+                                parameters.Add(keys[i], dictionary[keys[i]], DbType.Decimal, ParameterDirection.Input);
+                                i++;
+                            }
+                            else if (innerCategory.Equals("HomeSpread"))
+                            {
+                                dictionary.Add(keys[i], gameOdd.HomePointSpread);
+                                parameters.Add(keys[i], dictionary[keys[i]], DbType.Decimal, ParameterDirection.Input);
+                                i++;
+
+                                dictionary.Add(keys[i], gameOdd.HomePointSpreadPayout);
+                                parameters.Add(keys[i], dictionary[keys[i]], DbType.Decimal, ParameterDirection.Input);
+                                i++;
+                            }
+                            else if (innerCategory.Equals("AwaySpread"))
+                            {
+                                dictionary.Add(keys[i], gameOdd.AwayPointSpread);
+                                parameters.Add(keys[i], dictionary[keys[i]], DbType.Decimal, ParameterDirection.Input);
+                                i++;
+
+                                dictionary.Add(keys[i], gameOdd.AwayPointSpreadPayout);
+                                parameters.Add(keys[i], dictionary[keys[i]], DbType.Decimal, ParameterDirection.Input);
+                                i++;
+                            }
 
                             break;
                         case "overUnder":
-                            keys = new string[] { "@OverUnder", "@OverPayout", "@UnderPayout" };
+                            keys = String.IsNullOrEmpty(innerCategory) ? new string[] { "@OverUnder", "@OverPayout", "@UnderPayout" } :
+                                (new string[] { "@OverUnder", String.Concat("@", innerCategory) });
+
                             dictionary.Add(keys[i], gameOdd.OverUnder);
-                            parameters.Add(keys[i], dictionary[keys[i]], DbType.Decimal, ParameterDirection.Input);
-                            i++;
-
-                            dictionary.Add(keys[i], gameOdd.OverPayout);
                             parameters.Add(keys[i], dictionary[keys[i]], DbType.Int32, ParameterDirection.Input);
                             i++;
 
-                            dictionary.Add(keys[i], gameOdd.UnderPayout);
-                            parameters.Add(keys[i], dictionary[keys[i]], DbType.Int32, ParameterDirection.Input);
-                            i++;
+                            // OverUnder should change for both "Cards" but their Payouts should change individually
+                            if (String.IsNullOrEmpty(innerCategory) || innerCategory.Equals("OverPayout"))
+                            {
+                                dictionary.Add(keys[i], gameOdd.OverPayout);
+                                parameters.Add(keys[i], dictionary[keys[i]], DbType.Int32, ParameterDirection.Input);
+                                i++;
+                            }
+
+                            if (String.IsNullOrEmpty(innerCategory) || innerCategory.Equals("UnderPayout"))
+                            {
+                                dictionary.Add(keys[i], gameOdd.UnderPayout);
+                                parameters.Add(keys[i], dictionary[keys[i]], DbType.Int32, ParameterDirection.Input);
+                                i++;
+                            }
 
                             break;
                     }

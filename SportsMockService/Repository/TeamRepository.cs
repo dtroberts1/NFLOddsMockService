@@ -21,9 +21,9 @@ namespace SportsMockService.Repository
         public async Task<IEnumerable<Team>> GetTeams()
         {
             IEnumerable<Team> teams = null;
-            var sql = @"  SELECT t.Name, t.Id, v.Id, v.Name, v.Capacity, v.City, v.MapCoordinates, v.CountryCode FROM Teams t
+            var sql = @"  SELECT t.Name, t.Id, t.Abbrev, v.Id, v.Name, v.Capacity, v.City, v.MapCoordinates, v.CountryCode FROM Teams t
                 INNER JOIN Venues v
-                ON v.Id = t.VenueId;";
+                ON v.Id = t.VenueId ORDER BY t.Name;";
             using (var connection = _context.CreateConnection())
             {
                 teams = await connection.QueryAsync<Team, Venue, Team>(sql, (team, venue) => {

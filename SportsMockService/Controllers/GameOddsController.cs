@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SportsMockService.Contracts;
 using SportsMockService.Entities;
 using System;
@@ -48,11 +50,11 @@ namespace SportsMockService.Controllers
 
         [HttpPut]
         [Route("putGameOdd")]
-        public async Task<IActionResult> PutGameOdd(GameOdd gameOdd, [FromQuery] string changeCategory)
+        public async Task<IActionResult> PutGameOdd([FromBody] GameOdd gameOdd, [FromQuery] string changeCategory, [FromQuery] string innerCategory)
         {
             try
             {
-                var result = await _outcomeRepo.UpdateGameOdd(gameOdd, changeCategory);
+                var result = await _outcomeRepo.UpdateGameOdd(gameOdd, changeCategory, innerCategory);
             }
             catch(Exception ex)
             {

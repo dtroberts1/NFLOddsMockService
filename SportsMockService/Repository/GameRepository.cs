@@ -136,9 +136,9 @@ namespace SportsMockService.Repository
             IEnumerable<Game> duplicateGames = null;
 
             var sql = @"SELECT g.Id, s.Id, s.StatusText,
-                hT.Id, hT.Name, aT.Id, aT.Name, 
+                hT.Id, hT.Name, hT.Abbrev, aT.Id, aT.Name, aT.Abbrev,
                 hVenue.Id, hVenue.Name, hVenue.Capacity, hVenue.City, hVenue.MapCoordinates, hVenue.CountryCode,
-                aVenue.Id, aVenue.Name, aVenue.Capacity, aVenue.City, aVenue.MapCoordinates, aVenue.CountryCode,
+                aVenue.Id, aVenue.Name, aVenue.Capacity, aVenue.City, aVenue.MapCoordinates, aVenue.CountryCode, 
                 gO.Id, gO.[Created]
                   ,gO.[Updated]
                   ,gO.[HomeMoneyLine]
@@ -151,6 +151,7 @@ namespace SportsMockService.Repository
                   ,gO.[OverPayout]
                   ,gO.[UnderPayout]
                   ,gO.[AwayMoneyLine]
+                  ,gO.[oddType]
               FROM Games g
               INNER JOIN Statuses s
               ON s.Id = g.StatusId

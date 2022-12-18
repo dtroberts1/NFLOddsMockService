@@ -24,7 +24,6 @@ namespace SportsMockService.Controllers
             _configuration = configuration;
         }
 
-        [EnableCors]
         [HttpGet]
         [Route("allGames")]
         public async Task<IActionResult> GetGames()

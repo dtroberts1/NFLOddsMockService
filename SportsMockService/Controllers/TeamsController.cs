@@ -20,6 +20,7 @@ namespace SportsMockService.Controllers
         }
 
         [HttpGet]
+        [Route("allTeams")]
         public async Task<IActionResult> GetTeams()
         {
             try
