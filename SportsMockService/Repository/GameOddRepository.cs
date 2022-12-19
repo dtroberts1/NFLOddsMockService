@@ -282,22 +282,23 @@ namespace SportsMockService.Repository
                     parameters.Add("@GameId", gameOdd.Game.Id, DbType.Int32, ParameterDirection.Input);
                     parameters.Add("@Created", currentTime, DbType.DateTime, ParameterDirection.Input);
                     parameters.Add("@Updated", currentTime, DbType.DateTime, ParameterDirection.Input);
-                    parameters.Add("@HomeMoneyLine", gameOdd.HomeMoneyLine, DbType.Int32, ParameterDirection.Input);
-                    parameters.Add("@AwayMoneyLine", gameOdd.AwayMoneyLine, DbType.Int32, ParameterDirection.Input);
-                    parameters.Add("@DrawMoneyLine", gameOdd.DrawMoneyLine, DbType.Int32, ParameterDirection.Input);
-                    parameters.Add("@HomePointSpread", gameOdd.HomePointSpread, DbType.Decimal, ParameterDirection.Input);
-                    parameters.Add("@AwayPointSpread", gameOdd.AwayPointSpread, DbType.Decimal, ParameterDirection.Input);
-                    parameters.Add("@HomePointSpreadPayout", gameOdd.HomePointSpreadPayout, DbType.Decimal, ParameterDirection.Input);
-                    parameters.Add("@AwayPointSpreadPayout", gameOdd.AwayPointSpreadPayout, DbType.Decimal, ParameterDirection.Input);
-                    parameters.Add("@OverUnder", gameOdd.OverUnder, DbType.Decimal, ParameterDirection.Input);
-                    parameters.Add("@OverPayout", gameOdd.OverPayout, DbType.Int32, ParameterDirection.Input);
+                    parameters.Add("@HomeMoneyLine", gameOdd.HomeMoneyLine != -1 ? gameOdd.HomeMoneyLine : null, DbType.Int32, ParameterDirection.Input);
+                    parameters.Add("@AwayMoneyLine", gameOdd.AwayMoneyLine != -1 ? gameOdd.AwayMoneyLine : null, DbType.Int32, ParameterDirection.Input);
+                    parameters.Add("@DrawMoneyLine", gameOdd.DrawMoneyLine != -1 ? gameOdd.DrawMoneyLine : null, DbType.Int32, ParameterDirection.Input);
+                    parameters.Add("@HomePointSpread", gameOdd.HomePointSpread != -1 ? gameOdd.HomePointSpread : null, DbType.Decimal, ParameterDirection.Input);
+                    parameters.Add("@AwayPointSpread", gameOdd.AwayPointSpread != -1 ? gameOdd.AwayPointSpread : null, DbType.Decimal, ParameterDirection.Input);
+                    parameters.Add("@HomePointSpreadPayout", gameOdd.HomePointSpreadPayout != -1 ? gameOdd.HomePointSpreadPayout : null, DbType.Decimal, ParameterDirection.Input);
+                    parameters.Add("@AwayPointSpreadPayout", gameOdd.AwayPointSpreadPayout != -1 ? gameOdd.AwayPointSpreadPayout : null, DbType.Decimal, ParameterDirection.Input);
+                    parameters.Add("@OverUnder", gameOdd.OverUnder != -1 ? gameOdd.OverUnder : null, DbType.Decimal, ParameterDirection.Input);
+                    parameters.Add("@OverPayout", gameOdd.OverPayout != -1 ? gameOdd.OverPayout : null, DbType.Decimal, ParameterDirection.Input);
+                    parameters.Add("@UnderPayout", gameOdd.UnderPayout != -1 ? gameOdd.UnderPayout : null, DbType.Decimal, ParameterDirection.Input);
                     parameters.Add("@OddType", gameOdd.OddType, DbType.String, ParameterDirection.Input, gameOdd.OddType.Length);
 
 
                     sql = @"INSERT INTO GameOdds([BookId], [GameId], [Created], [Updated], [HomeMoneyLine], [AwayMoneyLine], [DrawMoneyLine], 
-                        [HomePointSpread], [AwayPointSpread], [HomePointSpreadPayout], [AwayPointSpreadPayout], [OverUnder], [OverPayout], [OddType])
-                        VALUES(@BookId, @GameId, @Created, @Updated, @HomeMoneyLine, @AwayMoneyLine, @DrawMoneyLine, @HomePointSpreadPayout, @AwayPointSpreadPayout, 
-                        @HomeSpreadPayout, @AwaySpreadPayout, @OverUnder, @OverPayout, @OddType);";
+                        [HomePointSpread], [AwayPointSpread], [HomePointSpreadPayout], [AwayPointSpreadPayout], [OverUnder], [OverPayout], [UnderPayout], [OddType])
+                        VALUES(@BookId, @GameId, @Created, @Updated, @HomeMoneyLine, @AwayMoneyLine, @DrawMoneyLine, @HomePointSpread, @AwayPointSpread, 
+                        @HomePointSpreadPayout, @AwayPointSpreadPayout, @OverUnder, @OverPayout, @UnderPayout, @OddType);";
                     using (var connection = _context.CreateConnection())
                     {
                         var affectedRows = connection.Execute(sql, parameters);

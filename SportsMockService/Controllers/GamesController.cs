@@ -45,8 +45,8 @@ namespace SportsMockService.Controllers
         {
             try
             {
-                var games = await _gameRepo.AddGame(newGame);
-                return Ok(games);
+                int gameId = await _gameRepo.AddGame(newGame);
+                return Ok(gameId);
             }
             catch (Exception ex)
             {

@@ -93,36 +93,45 @@ namespace SportsMockService.Repository
 
             if (!exists)
             {
-                int apiWeek = GetAPIWeek(null);
-                var parameters = new DynamicParameters();
-                int? statusId = -1;
-
-                var sql = @"SELECT Id
-                    FROM Statuses s WHERE s.[StatusText] like 'SCHEDULED'";
-                using (var connection = _context.CreateConnection())
+                try
                 {
-                    statusId = await connection.QueryFirstOrDefaultAsync<int>(sql);
-                }
+                    int apiWeek = GetAPIWeek(null);
+                    var parameters = new DynamicParameters();
+                    int? statusId = -1;
 
-                if (statusId == null)
+                    var sql = @"SELECT Id
+                    FROM Statuses s WHERE s.[StatusText] like 'SCHEDULED'";
+                    using (var connection = _context.CreateConnection())
+                    {
+                        statusId = await connection.QueryFirstOrDefaultAsync<int>(sql);
+                    }
+
+                    if (statusId == null)
+                    {
+                        return -1;
+                    }
+
+                    parameters.Add("@APIWeek", apiWeek, DbType.Int32, ParameterDirection.Input);
+                    parameters.Add("@DateTime", game.DateTime, DbType.DateTime, ParameterDirection.Input);
+                    parameters.Add("@HomeTeamId", game.HomeTeam.Id, DbType.Int32, ParameterDirection.Input);
+                    parameters.Add("@AwayTeamId", game.AwayTeam.Id, DbType.Int32, ParameterDirection.Input);
+                    parameters.Add("@StatusId", statusId, DbType.Int32, ParameterDirection.Input);
+
+                    sql = @"  
+                    INSERT INTO Games(StatusId, SeasonType, Season, APIWeek, [DateTime], HomeTeamId, AwayTeamId)
+                    OUTPUT INSERTED.Id                    
+                    VALUES(@StatusId, 1, '2022', @APIWeek, @DateTime, @HomeTeamId, @AwayTeamId)
+                    ";
+                    using (var connection = _context.CreateConnection())
+                    {
+                        var identity = connection.ExecuteScalar<int>(sql, parameters);
+                        return identity;
+                    }
+                }
+                catch(Exception ex)
                 {
                     return -1;
                 }
-
-                parameters.Add("@APIWeek", apiWeek, DbType.Int32, ParameterDirection.Input);
-                parameters.Add("@DateTime", DateTime.Now, DbType.DateTime, ParameterDirection.Input);
-                parameters.Add("@HomeTeamId", game.HomeTeam.Id, DbType.Int32, ParameterDirection.Input);
-                parameters.Add("@AwayTeamId", game.AwayTeam.Id, DbType.Int32, ParameterDirection.Input);
-                parameters.Add("@StatusId", statusId, DbType.Int32, ParameterDirection.Input);
-
-                sql = @"  INSERT INTO Games(StatusId, SeasonType, Season, APIWeek, [DateTime], HomeTeamId, AwayTeamId)
-                    VALUES(@StatusId, 1, '2022', @APIWeek, @DateTime, @HomeTeamId, @AwayTeamId); ";
-                using (var connection = _context.CreateConnection())
-                {
-                    var affectedRows = connection.Execute(sql, parameters);
-                    Console.WriteLine($"Affected Rows: {affectedRows}");
-                }
-                return 0;
             }
             else
             {
